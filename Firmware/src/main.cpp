@@ -14,6 +14,8 @@
 #define RIGHT_ENC_A   3
 #define RIGHT_ENC_B   0
 
+#define SWITCH_PIN		6
+
 EDLController *controller;
 
 void inc_left() {
@@ -33,11 +35,73 @@ void setup() {
 
 	attachInterrupt(digitalPinToInterrupt(controller->left_motor->get_enc_pin()), inc_left, RISING);
 	attachInterrupt(digitalPinToInterrupt(controller->right_motor->get_enc_pin()), inc_right, RISING);
+
+	pinMode(SWITCH_PIN, INPUT);
+}
+
+void ec() {
+	uint8_t st_speed = 70;
+	uint8_t tr_speed = 70;
+	controller->drive_forward_cm(100, st_speed);
+	delay(100);
+	controller->turn_left(tr_speed);
+	delay(100);
+	controller->drive_forward_cm(200, st_speed);
+	delay(100);
+	controller->turn_right(tr_speed);
+	delay(100);
+	controller->drive_forward_cm(100, st_speed);
+	delay(100);
+	controller->turn_right(tr_speed);
+	delay(100);
+	controller->drive_forward_cm(100, st_speed);
+	delay(100);
+	controller->turn_right(tr_speed);
+	delay(100);
+	controller->drive_forward_cm(200, st_speed);
+	delay(100);
+	controller->turn_left(tr_speed);
+	delay(100);
+	controller->drive_forward_cm(100, st_speed);
+	delay(100);
+	controller->turn_left(tr_speed);
+	delay(100);
+}
+
+void demo() {
+	delay(1000);
+
+	uint8_t st_speed = 100;
+	uint8_t tr_speed = 50;
+	controller->drive_forward_ft(2, st_speed);
+	delay(200);
+	controller->pivot_cw(180, tr_speed);
+	delay(200);
+	controller->drive_forward_ft(2, st_speed);
+	delay(200);
+	controller->pivot_ccw(180, tr_speed);
+
+}
+
+void enc_exp() {
+	delay(1000);
+
+	char buff[50];
+	sprintf(buff, "LEFT: %d\tRIGHT: %d\n", controller->left_motor->enc_count, controller->right_motor->enc_count);
+	Serial.print(buff);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+	// put your main code here, to run repeatedly:
 
-  controller->drive_forward(2, 127);
-  delay(1500);
+	// controller->drive_forward_ft(2, 127);
+	// delay(1500);
+	// controller->pivot_ccw(360, 70);
+
+	do {} while (!digitalRead(SWITCH_PIN));
+	// ec();
+	demo();
+	// enc_exp();
+	
+	
 }

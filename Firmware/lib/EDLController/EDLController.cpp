@@ -11,23 +11,32 @@ EDLController::~EDLController()
 {
 }
 
-void EDLController::drive_forward(uint8_t feet, uint8_t speed) {
-    uint16_t pulses = FT_TO_PULSE(feet);
+void EDLController::drive_forward_ft(uint8_t feet, uint8_t speed) {
+    drive_forward_in(feet * 12, speed);
+}
+
+void EDLController::drive_forward_in(uint8_t inches, uint8_t speed) {
+    drive_forward_cm(IN_TO_CM(inches), speed);
+}
+
+void EDLController::drive_forward_cm(uint8_t cm, uint8_t speed) {
+    uint16_t left_pulses = CM_TO_PULSE(cm, 1);
+    uint16_t right_pulses = CM_TO_PULSE(cm, 0);
 
     left_motor->enc_count = 0;
     right_motor->enc_count = 0;
 
-    left_motor->forward(speed);
+    left_motor->forward(speed * 1.02);
     right_motor->forward(speed);
 
     bool left_done = false;
     bool right_done = false;
     while (!(left_done && right_done)) {
-        if (left_motor->enc_count >= pulses) {
+        if (left_motor->enc_count >= left_pulses) {
             left_motor->stop();
             left_done = true;
         }
-        if (right_motor->enc_count >= pulses) {
+        if (right_motor->enc_count >= right_pulses) {
             right_motor->stop();
             right_done = true;
         }
@@ -35,23 +44,26 @@ void EDLController::drive_forward(uint8_t feet, uint8_t speed) {
 }
 
 void EDLController::pivot_ccw(uint16_t degrees, uint8_t speed) {
-    uint16_t pulses = DEG_TO_PULSES(degrees);
+    uint16_t left_pulses = DEG_TO_PULSES(degrees, 1);
+    uint16_t right_pulses = DEG_TO_PULSES(degrees, 0);
 
     left_motor->enc_count = 0;
     right_motor->enc_count = 0;
 
-    left_motor->backward(speed);
+    left_motor->backward(speed * 1.1);
     right_motor->forward(speed);
 
     bool left_done = false;
     bool right_done = false;
 
+    // while (left_motor->enc_count < left_pulses &&)
+
     while (!(left_done && right_done)) {
-        if (left_motor->enc_count >= pulses) {
+        if (left_motor->enc_count >= left_pulses) {
             left_motor->stop();
             left_done = true;
         }
-        if (right_motor->enc_count >= pulses) {
+        if (right_motor->enc_count >= right_pulses) {
             right_motor->stop();
             right_done = true;
         }
@@ -59,23 +71,24 @@ void EDLController::pivot_ccw(uint16_t degrees, uint8_t speed) {
 }
 
 void EDLController::pivot_cw(uint16_t degrees, uint8_t speed) {
-    uint16_t pulses = DEG_TO_PULSES(degrees);
+    uint16_t left_pulses = DEG_TO_PULSES(degrees, 1);
+    uint16_t right_pulses = DEG_TO_PULSES(degrees, 0);
 
     left_motor->enc_count = 0;
     right_motor->enc_count = 0;
 
-    left_motor->forward(speed);
+    left_motor->forward(speed * 1.);
     right_motor->backward(speed);
 
-    bool left_done = false;
+    bool left_done = false; 
     bool right_done = false;
 
     while (!(left_done && right_done)) {
-        if (left_motor->enc_count >= pulses) {
+        if (left_motor->enc_count >= left_pulses) {
             left_motor->stop();
             left_done = true;
         }
-        if (right_motor->enc_count >= pulses) {
+        if (right_motor->enc_count >= right_pulses) {
             right_motor->stop();
             right_done = true;
         }
