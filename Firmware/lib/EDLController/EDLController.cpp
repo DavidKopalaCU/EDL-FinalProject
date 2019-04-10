@@ -100,5 +100,5 @@ void EDLController::turn_left(uint8_t speed) {
 }
 
 void EDLController::turn_right(uint8_t speed) {
-    pivot_cw(90, speed);
+    pivot_cw(80, speed);
 }

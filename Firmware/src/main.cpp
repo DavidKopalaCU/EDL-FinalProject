@@ -40,7 +40,9 @@ void setup() {
 }
 
 void ec() {
-	uint8_t st_speed = 70;
+	delay(2000);
+
+	uint8_t st_speed = 38;
 	uint8_t tr_speed = 70;
 	controller->drive_forward_cm(100, st_speed);
 	delay(100);
@@ -71,11 +73,11 @@ void ec() {
 void demo() {
 	delay(1000);
 
-	uint8_t st_speed = 100;
-	uint8_t tr_speed = 50;
+	uint8_t st_speed = 150; // 60%
+	uint8_t tr_speed = 75;	// 30%
 	controller->drive_forward_ft(2, st_speed);
 	delay(200);
-	controller->pivot_cw(180, tr_speed);
+	controller->pivot_cw(176, tr_speed);
 	delay(200);
 	controller->drive_forward_ft(2, st_speed);
 	delay(200);
@@ -99,8 +101,8 @@ void loop() {
 	// controller->pivot_ccw(360, 70);
 
 	do {} while (!digitalRead(SWITCH_PIN));
-	// ec();
-	demo();
+	ec();
+	// demo();
 	// enc_exp();
 	
 	
